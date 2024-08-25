@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    
+    <form method="post">
+        {% csrf_token %}
+        {% for question in questions %}
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">{{ question.question }}</span>
+                    <div class="input-field">
+                        {% if question.question_type == "Text" %}
+                            <input type="text" name="response_{{ question.id }}" class="validate" placeholder="Your answer">
+                        {% elif question.question_type == "BigText" %}
+                            <textarea name="response_{{ question.id }}" class="materialize-textarea" placeholder="Your detailed answer"></textarea>
+                        {% elif question.question_type == "Radio" %}
+                            {% for option in question.options.all %}
+                                <p>
+                                    <label>
+                                        <input type="radio" name="options_{{ question.id }}" value="{{ option.id }}">
+                                        <span>{{ option.option_name }}</span>
+                                    </label>
+                                </p>
+                            {% endfor %}
+                        {% elif question.question_type == "Checkbox" %}
+                            {% for option in question.options.all %}
+                                <p>
+                                    <label>
+                                        <input type="checkbox" name="options_{{ question.id }}" value="{{ option.id }}">
+                                        <span>{{ option.option_name }}</span>
+                                    </label>
+                                </p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="center-align">
+            <button type="submit" class="btn waves-effect waves-light">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
